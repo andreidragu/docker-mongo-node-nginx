@@ -1,0 +1,45 @@
+version: '3.7'
+
+services:
+
+  # MongoDB
+  mongo:
+    container_name: mongo
+    build: ./mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: adminSecret
+      MONGO_INITDB_DATABASE: dmnnDB
+    ports:
+     - "27017:27017"
+  
+  # Backend
+  backend:
+    depends_on: 
+      - mongo
+    container_name: backend
+    build: ./server
+    volumes:
+      - ./server:/usr/src/docker-mongo-node-nginx/server
+    # command: npm start
+    working_dir: /usr/src/docker-mongo-node-nginx/server
+    ports:
+      - "3000:3000"
+    environment:
+      MONGO_URI: mongodb://admin:adminSecret@mongo:27017/dmnnDB
+      WAIT_HOSTS: mongo:27017
+
+  # Frontend
+  # frontend:
+  #   depends_on:
+  #     - backend
+  #   container_name: frontend
+  #   build: ./client
+  #   volumes:
+  #     - ./client:/usr/src/docker-mongo-node-nginx/client
+  #   working_dir: /usr/src/docker-mongo-node-nginx/client
+  #   ports:
+  #     - "80:80"
+  #   environment:
+  #     WAIT_HOSTS: backend:3000
