@@ -31,15 +31,10 @@ services:
       WAIT_HOSTS: mongo:27017
 
   # Frontend
-  # frontend:
-  #   depends_on:
-  #     - backend
-  #   container_name: frontend
-  #   build: ./client
-  #   volumes:
-  #     - ./client:/usr/src/docker-mongo-node-nginx/client
-  #   working_dir: /usr/src/docker-mongo-node-nginx/client
-  #   ports:
-  #     - "80:80"
-  #   environment:
-  #     WAIT_HOSTS: backend:3000
+  frontend:
+    container_name: frontend
+    build: ./client
+    volumes:
+      - ./client/build:/usr/share/nginx/html
+    ports:
+      - "80:80"
